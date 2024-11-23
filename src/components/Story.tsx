@@ -1,7 +1,6 @@
-"use client"
+"use client";
 import gsap from "gsap";
 import { useRef, MouseEvent } from "react";
-
 import Button from "./Button";
 import AnimatedTitle from "./AnimatedTitle";
 
@@ -10,7 +9,7 @@ const Story = () => {
   const frameRef = useRef<HTMLImageElement | null>(null);
 
   // Handle mouse move event
-  const handleMouseMove = (e: MouseEvent) => {
+  const handleMouseMove = (e: MouseEvent<HTMLImageElement>) => {
     const { clientX, clientY } = e;
     const element = frameRef.current;
 
@@ -72,13 +71,13 @@ const Story = () => {
                   onMouseUp={handleMouseLeave}
                   onMouseEnter={handleMouseLeave}
                   src="/img/entrance.webp"
-                  alt="entrance.webp"
+                  alt="entrance image"
                   className="object-contain"
                 />
               </div>
             </div>
 
-            {/* for the rounded corner */}
+            {/* For the rounded corner */}
             <svg
               className="invisible absolute size-0"
               xmlns="http://www.w3.org/2000/svg"
@@ -128,4 +127,3 @@ const Story = () => {
 };
 
 export default Story;
- 
