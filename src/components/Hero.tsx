@@ -21,7 +21,6 @@ const Hero = () => {
   const nextVdRef = useRef<HTMLVideoElement | null>(null);
 
   const handleVideoLoad = () => {
-    console.log("Video loaded successfully");
     setLoadedVideos((prev) => prev + 1);
   };
 
@@ -166,8 +165,8 @@ const Hero = () => {
           />
         </div>
         <h1 className="special-font hero-heading absolute bottom-5 right-5 z-40 text-blue-75">
-          R<b>I</b>
-          <b>b</b>a<b>n</b>
+          B<b>I</b>
+          <b>m</b>o<b>n</b>
         </h1>
 
         <div className="absolute left-0 top-0 z-40 size-full">
@@ -190,8 +189,8 @@ const Hero = () => {
         </div>
       </div>
       <h1 className="special-font hero-heading absolute bottom-5 right-5 text-black">
-        R<b>I</b>
-        <b>b</b>a<b>n</b>
+        B<b>I</b>
+        <b>m</b>o<b>n</b>
       </h1>
     </div>
   );

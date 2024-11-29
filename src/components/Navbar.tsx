@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 import clsx from "clsx";
 import gsap from "gsap";
 import { useWindowScroll } from "react-use";
@@ -14,7 +14,6 @@ const navItems: string[] = ["Nexus", "Vault", "Prologue", "About", "Contact"];
 const NavBar: React.FC = () => {
   // State for toggling audio and visual indicator
   const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
-  const [isIndicatorActive, setIsIndicatorActive] = useState<boolean>(false);
 
   // Refs for audio and navigation container
   const audioElementRef = useRef<HTMLAudioElement | null>(null);
@@ -24,21 +23,26 @@ const NavBar: React.FC = () => {
   const [isNavVisible, setIsNavVisible] = useState<boolean>(true);
   const [lastScrollY, setLastScrollY] = useState<number>(0);
 
-  // Toggle audio and visual indicator
-  const toggleAudioIndicator = () => {
-    setIsAudioPlaying((prev) => !prev);
-    setIsIndicatorActive((prev) => !prev);
-  };
-
-  // Manage audio playback
+  // Manage audio playback with fade-in and fade-out
   useEffect(() => {
     if (isAudioPlaying) {
       audioElementRef.current?.play();
+      gsap.to(audioElementRef.current, {
+        volume: 1, // Fade in volume to 1 (max volume)
+        duration: 1, // Duration of the fade-in
+      });
     } else {
-      audioElementRef.current?.pause();
+      gsap.to(audioElementRef.current, {
+        volume: 0, // Fade out volume to 0 (mute)
+        duration: 1, // Duration of the fade-out
+        onComplete: () => {
+          audioElementRef.current?.pause(); // Pause audio once faded out
+        },
+      });
     }
   }, [isAudioPlaying]);
 
+  // Scroll-based navbar visibility logic
   useEffect(() => {
     if (currentScrollY === 0) {
       // Topmost position: show navbar without floating-nav
@@ -64,6 +68,34 @@ const NavBar: React.FC = () => {
       duration: 0.2,
     });
   }, [isNavVisible]);
+
+  // Handle tab visibility (focus/unfocus)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // Pause audio when the tab is not in focus
+        audioElementRef.current?.pause();
+      } else {
+        // Resume audio when the tab is focused again (if it's playing)
+        if (isAudioPlaying) {
+          audioElementRef.current?.play();
+        }
+      }
+    };
+
+    // Add event listener for visibility change
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    // Cleanup the event listener when the component is unmounted
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [isAudioPlaying]);
+
+  // Toggle audio state on button click
+  const toggleAudio = () => {
+    setIsAudioPlaying((prev) => !prev);
+  };
 
   return (
     <div
@@ -105,7 +137,7 @@ const NavBar: React.FC = () => {
             </div>
 
             <button
-              onClick={toggleAudioIndicator}
+              onClick={toggleAudio}
               className="ml-10 flex items-center space-x-0.5"
             >
               <audio
@@ -118,7 +150,7 @@ const NavBar: React.FC = () => {
                 <div
                   key={bar}
                   className={clsx("indicator-line", {
-                    active: isIndicatorActive,
+                    active: isAudioPlaying, // Only animate when audio is playing
                   })}
                   style={{
                     animationDelay: `${bar * 0.1}s`,
